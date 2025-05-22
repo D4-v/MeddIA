@@ -12,7 +12,7 @@ load_dotenv()  # Carga variables desde .env
 PRIVATE_KEY = os.getenv("ROBOFLOW_API_KEY")  # Lee desde entorno
 
 # === API Key ===
-#os.environ["ROBOFLOW_API_KEY"] = "rf_ErVwPbll04evlDgUJ6s7wDHHeq63"
+
 
 warnings.filterwarnings("ignore", category=UserWarning)  # Silencia todos los UserWarnings
 
