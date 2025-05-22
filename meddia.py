@@ -6,12 +6,15 @@ from inference import get_model
 import supervision as sv
 import warnings
 import requests
+from dotenv import load_dotenv  # Nuevo
+
+load_dotenv()  # Carga variables desde .env
+PRIVATE_KEY = os.getenv("ROBOFLOW_API_KEY")  # Lee desde entorno
+
 # === API Key ===
 #os.environ["ROBOFLOW_API_KEY"] = "rf_ErVwPbll04evlDgUJ6s7wDHHeq63"
 
 warnings.filterwarnings("ignore", category=UserWarning)  # Silencia todos los UserWarnings
-
-PRIVATE_KEY = "J1IL5DzExCs8tSMRGi4u"  # La que revelaste
 
 url = f"https://api.roboflow.com/ort/meddia/1?api_key={PRIVATE_KEY}&device=cpu"
 response = requests.get(url)
