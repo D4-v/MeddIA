@@ -1,60 +1,28 @@
-
-#imagen = cv2.imread("I:/OscarDRoblesB/py/Fotos/1108.jpg")
 import os
 import cv2
 from inference import get_model
 import supervision as sv
-import warnings
-import requests
-from dotenv import load_dotenv  # Nuevo
+from dotenv import load_dotenv
 
-load_dotenv()  # Carga variables desde .env
-PRIVATE_KEY = os.getenv("ROBOFLOW_API_KEY")  # Lee desde entorno
+# Configuración segura
+load_dotenv()
+API_KEY = os.getenv("ROBOFLOW_API_KEY")
 
-# === API Key ===
-
-
-warnings.filterwarnings("ignore", category=UserWarning)  # Silencia todos los UserWarnings
-
-url = f"https://api.roboflow.com/ort/meddia/1?api_key={PRIVATE_KEY}&device=cpu"
-response = requests.get(url)
-print(response.status_code, response.json())  # Debería devolver 200
-
-modelo = get_model(model_id="meddia/1", api_key="J1IL5DzExCs8tSMRGi4u")  # <-- Usa la PRIVATE key
-
-
-# === Cargar imagen ===
-#""C:\Users\funky\OneDrive\Documentos\Test.jpg""
-ruta = "C:/Users/funky/OneDrive/Documentos/test6.jpg"  
-imagen = cv2.imread(ruta)
-
-if imagen is None:
-    raise FileNotFoundError(f"No se pudo cargar la imagen: {ruta}")
-
-# === Cargar modelo ===
+# Carga de modelo seguro
 modelo = get_model(
     model_id="meddia/1",
-    api_key="J1IL5DzExCs8tSMRGi4u",
+    api_key=API_KEY  # Ahora seguro
 )
-#modelo = get_model(model_id="meddia/1")
 
-# === Inferencia ===
-resultado = modelo.infer(imagen)[0]
-detecciones = sv.Detections.from_inference(resultado)
+# Ruta relativa para imágenes
+current_dir = os.path.dirname(__file__)
+image_path = os.path.join(current_dir, "assets", "test_image.jpg")
+
 try:
-    resultado = modelo.infer(imagen)[0]
+    imagen = cv2.imread(image_path)
+    if imagen is None:
+        raise FileNotFoundError(f"Imagen no encontrada en {image_path}")
+    
+    # Procesamiento...
 except Exception as e:
-    print(f"Error en la inferencia: {e}")
-
-# === Dibujar cajas ===meddia/1
-box_annotator = sv.BoxAnnotator()
-label_annotator = sv.LabelAnnotator()
-
-imagen_anotada = box_annotator.annotate(scene=imagen, detections=detecciones)
-imagen_anotada = label_annotator.annotate(scene=imagen_anotada, detections=detecciones)
-
-
-# === Mostrar resultado con OpenCV ===
-cv2.imshow("Resultado", imagen_anotada)
-cv2.waitKey(0)
-cv2.destroyAllWindows()
+    print(f"Error: {e}")
