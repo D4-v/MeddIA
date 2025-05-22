@@ -1,0 +1,4 @@
+# Archivos a ignorar
+.env
+__pycache__/
+*.pyc
